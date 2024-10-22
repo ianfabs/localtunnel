@@ -1,0 +1,19 @@
+{
+  "version": "4",
+  "specifiers": {
+    "npm:h2tunnel@*": "0.1.1"
+  },
+  "npm": {
+    "h2tunnel@0.1.1": {
+      "integrity": "sha512-kEeL2ue8wxwi7k1MXwDWroDMIhBAZfq7ryAujqAkPlO7nlIIwYrVzNCKUO0gkCQdzAojzBQdfSa5bnS5yG6BlA=="
+    }
+  },
+  "remote": {
+    "https://raw.githubusercontent.com/boronine/h2tunnel/refs/heads/main/src/h2tunnel.ts": "57e2e94bd6a31b2c04ec4a68da48e2f1335872c0eb577e58802e82bb6d08193a"
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@1"
+    ]
+  }
+}
