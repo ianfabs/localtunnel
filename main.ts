@@ -132,6 +132,7 @@ export class TunnelServer extends AbstractTunnel {
   muxSessionClosing = false;
   muxSessionConnected: boolean = false;
   tunnelServer: tls.Server | null = null;
+  _tunnelServer: Deno.TlsConn | null = null;
   tunnelServerClosing = false;
   httpServer: http.Server | null = null;
   httpServerClosing = false;
@@ -221,17 +222,29 @@ export class TunnelServer extends AbstractTunnel {
     this.updateHook();
   }
 
-  startTunnelServer() {
+  async startTunnelServer() {
+    const { key, cert } = this.options;
     this.log({ tunnelServer: "starting" });
     this.tunnelServerClosing = false;
     this.tunnelServer = tls.createServer({
-      key: this.options.key,
-      cert: this.options.cert,
-      // This is necessary only if using client certificate authentication.
+      key,
+      cert,
+      ca: [cert],
       requestCert: true,
-      // This is necessary only if the client uses a self-signed certificate.
-      ca: [this.options.cert],
+    }, (socket) => {
+      console.log(
+        "server connected: ",
+        socket.authorized ? "authorized" : "unauthorized",
+      );
+      socket.write("welcome\n");
+      socket.setEncoding("utf8");
+      socket.pipe(socket);
     });
+    // this._tunnelServer = await Deno.connectTls({
+    //   key,
+    //   cert,
+    //   port: 80,
+    // });
     this.tunnelServer.maxConnections = 1;
     this.tunnelServer.on("drop", (options) => {
       this.log({ tunnelServer: "drop", options });
